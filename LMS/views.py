@@ -130,27 +130,6 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
             comment.save()
             return redirect('tasktrack:task_detail', pk=comment.task.pk)
         
-class CommentLikeToggle(LoginRequiredMixin, View):
-    def post(self, request, *args, **kwargs):
-        comment_id = kwargs.get('comment_id')
-        comment = Comment.objects.get(pk=comment_id)
-        user = request.user
-        like, created = Like.objects.get_or_create(comment=comment, user=user)
-        if not created:
-           
-            like.delete()
-
-       
-        return redirect('tasktrack:task_detail', pk=comment.task.id)
-
-        
-
-
-    #def get_context_data(self, **kwargs)
-    #    context = super().get_context_data(**kwargs)
-    #    context ["comments"] = Comment.objects.filter(task=self.get_object())
-    #    return context
-
 class TaskAddView(LoginRequiredMixin, CreateView):
     model = Task
     template_name = "tasktrack/task_add.html"
