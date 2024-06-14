@@ -88,7 +88,8 @@ class CustomUser(AbstractUser):
 
 class Course(models.Model):
     name = models.CharField(max_length=100)
-    description = models.CharField(max_length=100, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    short_description = models.CharField(max_length=100,null=True, blank=True)
 
     def __str__(self):
         return f"{self.name}"
@@ -119,7 +120,7 @@ class Task(models.Model):
     priority = models.IntegerField()
     start_date = models.DateField()
     dead_line = models.DateField()
-    task_done = models.ForeignKey(Task_Done)
+    task_done = models.ForeignKey(Task_Done, on_delete=models.DO_NOTHING)
     
 
     def __str__(self):
@@ -131,8 +132,8 @@ class Lesson(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
     #media
-    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='posts')
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='themes')
+    lesson_creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='courses')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -143,14 +144,14 @@ class Announcement(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
     #media
-    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='posts')
+    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.title}"
 
 class Comment(models.Model):
-    post = models.ForeignKey(Task, Lesson, on_delete=models.CASCADE, related_name='comments')
+    #post = models.ForeignKey(Task, Lesson, on_delete=models.CASCADE, related_name='comments')
     creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='comments')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -159,11 +160,11 @@ class Comment(models.Model):
     def get_absolute_url(self):
         return self.post.get_absolute_url()
 
-class Like(models.Model):
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='likes')
-    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='liked_comments')
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together = ('comment', 'user')
+#class Like(models.Model):
+#    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='likes')
+#    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='liked_comments')
+#    created_at = models.DateTimeField(auto_now_add=True)
+#
+#    class Meta: 
+#        unique_together = ('comment', 'user')
 
