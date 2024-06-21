@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="col mb-3">
+    <div class="col">
+        <h1>Уроки</h1>
+    </div>
+</div>
+<div class="col mb-5">
+    {% for course in courses %}
+    <div class ="col-12">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+              <a href="#"><h5 class="card-title">{{ task.name }}</h5></a>
+              <h6 class="card-subtitle mb-1 text-body-secondary">{{ task.staus }}</h6>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
