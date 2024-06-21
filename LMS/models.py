@@ -115,7 +115,7 @@ class Task(models.Model):
     name = models.CharField(max_length = 50)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='themes')
     description = models.TextField()
-    staus = models.CharField(max_length = 50, choices = STATUSES, default = "notdone")
+    status = models.CharField(max_length = 50, choices = STATUSES, default = "notdone")
     creator = models.ManyToManyField(CustomUser)
     priority = models.IntegerField()
     start_date = models.DateField()
@@ -129,10 +129,10 @@ class Task(models.Model):
 
 
 class Lesson(models.Model):
-    title = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
     content = models.TextField()
     #media
-    lesson_creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='courses')
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -151,7 +151,7 @@ class Announcement(models.Model):
         return f"{self.title}"
 
 class Comment(models.Model):
-    #post = models.ForeignKey(Task, Lesson, on_delete=models.CASCADE, related_name='comments')
+    post = models.ForeignKey(Task, Lesson, on_delete=models.CASCADE, related_name='comments')
     creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='comments')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -160,11 +160,10 @@ class Comment(models.Model):
     def get_absolute_url(self):
         return self.post.get_absolute_url()
 
-#class Like(models.Model):
-#    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='likes')
-#    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='liked_comments')
-#    created_at = models.DateTimeField(auto_now_add=True)
-#
-#    class Meta: 
-#        unique_together = ('comment', 'user')
+class Like(models.Model):
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='likes')
+    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='liked_comments')
+    created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta: 
+        unique_together = ('comment', 'user')
