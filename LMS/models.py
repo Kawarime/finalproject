@@ -1,7 +1,7 @@
 from django.db import models
 
 
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, User
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import Permission
 
@@ -113,14 +113,14 @@ class Task(models.Model):
         ("done", "Done")
     ]
     name = models.CharField(max_length = 50)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='themes')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='courses')
     description = models.TextField()
     status = models.CharField(max_length = 50, choices = STATUSES, default = "notdone")
-    creator = models.ManyToManyField(CustomUser)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     priority = models.IntegerField()
     start_date = models.DateField()
     dead_line = models.DateField()
-    task_done = models.ForeignKey(Task_Done, on_delete=models.DO_NOTHING)
+    task_done = models.ForeignKey(Task_Done, on_delete=models.DO_NOTHING, blank=True, null=True)
     
 
     def __str__(self):
@@ -133,7 +133,7 @@ class Lesson(models.Model):
     content = models.TextField()
     #media
     creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='courses')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -151,19 +151,19 @@ class Announcement(models.Model):
         return f"{self.title}"
 
 class Comment(models.Model):
-    post = models.ForeignKey(Task, Lesson, on_delete=models.CASCADE, related_name='comments')
-    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='comments')
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    #post = models.ForeignKey(Task, Lesson, on_delete=models.CASCADE, related_name='comments')
+    #creator = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='comments')
+    #content = models.TextField()
+    #created_at = models.DateTimeField(auto_now_add=True)
     #media = models.FileField(upload_to='comments_media/',blank = True, null =True)
 
     def get_absolute_url(self):
         return self.post.get_absolute_url()
 
-class Like(models.Model):
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='likes')
-    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='liked_comments')
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta: 
-        unique_together = ('comment', 'user')
+#class Like(models.Model):
+#    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='likes')
+#    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='liked_comments')
+#    created_at = models.DateTimeField(auto_now_add=True)
+#
+#    class Meta: 
+#        unique_together = ('comment', 'user')
