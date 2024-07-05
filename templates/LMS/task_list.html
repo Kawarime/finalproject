@@ -9,12 +9,12 @@
     </div>
 </div>
 <div class="col mb-5">
-    {% for task in object_list %}
+    {% for task in tasks %}
     <div class ="col-12">
         <div class="card" style="width: 18rem;">
             <div class="card-body">
-              <a href="#"><h5 class="card-title">{{ task.name }}</h5></a>
-              <h6 class="card-subtitle mb-1 text-body-secondary">{{ task.staus }}</h6>
+              <a href="{% url 'lms:task_detail' task.id %}"><h5 class="card-title">{{ task.name }}</h5></a>
+              <h6 class="card-subtitle mb-1 text-body-secondary">{{ task.status }}</h6>
               <a href="{% url 'lms:task_update' task.id %}"><small-text class="card-title">Змінити таск</small-text></a>
               <a href="{% url 'lms:task_delete' task.id %}"><small-text class="card-title">delete таск</small-text></a>
             </div>

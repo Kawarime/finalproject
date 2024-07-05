@@ -14,6 +14,7 @@
             <div class="card" style="width: 18rem;">
                 <div class="card-body">
                   <a href="{% url 'lms:task_list' course.pk %}"><h5 class="card-title">{{ course.name }}</h5></a>
+                  <a href="{% url 'lms:lesson_list' course.pk %}"><h5 class="card-title">lesson list</h5></a>
                   <h6 class="card-subtitle mb-1 text-body-secondary">{{ course.short_description }}</h6>
                 </div>
             </div>

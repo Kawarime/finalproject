@@ -95,15 +95,6 @@ class Course(models.Model):
         return f"{self.name}"
 
 
-class Task_Done(models.Model):
-    creator = models.ManyToManyField(CustomUser)
-    MARKS = [
-        ("1", "1"),
-        ("2", "2"),
-        ("3", "3"),
-        ("4", "4"),
-        ("5", "5"),
-    ]
 
 
 class Task(models.Model):
@@ -117,27 +108,35 @@ class Task(models.Model):
     description = models.TextField()
     status = models.CharField(max_length = 50, choices = STATUSES, default = "notdone")
     creator = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    priority = models.IntegerField()
-    start_date = models.DateField()
-    dead_line = models.DateField()
-    task_done = models.ForeignKey(Task_Done, on_delete=models.DO_NOTHING, blank=True, null=True)
+
     
 
     def __str__(self):
         return f"{self.name}"
-    
-
 
 class Lesson(models.Model):
     name = models.CharField(max_length=100)
     content = models.TextField()
     #media
-    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
-    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.title}"
+
+class Task_Done(models.Model):
+    creator = models.ManyToManyField(CustomUser)
+    MARKS = [
+        ("0", "Не оценено"),
+        ("1", "1"),
+        ("2", "2"),
+        ("3", "3"),
+        ("4", "4"),
+        ("5", "5")
+    ]
+    content = models.FileField(upload_to='task_done_media/',blank = True, null =True)
+    mark = models.CharField(max_length=1, choices=MARKS, default="0")
+    task = models.ForeignKey(Lesson, on_delete=models.CASCADE, blank=True, null=True)
 
 
 class Announcement(models.Model):

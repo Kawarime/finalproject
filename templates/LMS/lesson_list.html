@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="col mb-3">
+    <div class="col">
+        <h1>Уроки</h1>
+        <a href="{% url 'lms:task_add' %}?course={{ course.pk }}"><h2>Создать новый таск</h2></a>
+        <a href="{% url 'lms:lesson_add' %}?course={{ course.pk }}"><h2>Создать новый урок</h2></a>
+    </div>
+</div>
+<div class="col mb-5">
+    {% for lesson in lessons %}
+    <div class ="col-12">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+              <a href="{% url 'lms:lesson_detail' lesson.id %}"><h5 class="card-title">{{ lesson.name }}</h5></a>
+              <a href="{% url 'lms:lesson_update' lesson.id %}"><small-text class="card-title">Змінити таск</small-text></a>
+              <a href="{% url 'lms:lesson_delete' lesson.id %}"><small-text class="card-title">delete таск</small-text></a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
