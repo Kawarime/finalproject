@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from LMS.models import *
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView, View
-from LMS.forms import TaskAdd, CommentForm, LessonAdd
+from LMS.forms import TaskAdd, LessonAdd
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from LMS.mixins import UserIsOwnerMixin
@@ -106,7 +106,7 @@ class TaskView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         course_pk = self.kwargs.get('pk')
         course = get_object_or_404(Course, pk=course_pk)
-        tasks = Course.objects.filter(course=course)
+        tasks = Task.objects.filter(course=course)
         return tasks
 
     def get_context_data(self, **kwargs):
@@ -120,30 +120,31 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
     template_name = "LMS/task_detail.html"
     context_object_name = "task"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['comment_form'] = CommentForm()  
-        return context
-
-    def post(self, request, *args, **kwargs):
-        comment_form = CommentForm(request.POST, request.FILES)
-        if comment_form.is_valid():
-            comment = comment_form.save(commit=False)
-            comment.creator = request.user
-            comment.task = self.get_object()
-            comment.save()
-            return redirect('LMS:task_detail', pk=comment.task.pk)
+    #def get_context_data(self, **kwargs):
+    #    context = super().get_context_data(**kwargs)
+    #    context['comment_form'] = CommentForm()  
+    #    return context
+#
+    #def post(self, request, *args, **kwargs):
+    #    comment_form = CommentForm(request.POST, request.FILES)
+    #    if comment_form.is_valid():
+    #        comment = comment_form.save(commit=False)
+    #        comment.creator = request.user
+    #        comment.task = self.get_object()
+    #        comment.save()
+    #        return redirect('LMS:task_detail', pk=comment.task.pk)
         
 class TaskAddView(LoginRequiredMixin, CreateView):
     model = Task
     template_name = "LMS/task_add.html"
     form_class = TaskAdd
-    success_url = reverse_lazy("LMS:courses_list")
+    success_url = reverse_lazy("lms:main")
 
     def get_initial(self):
         initial = super().get_initial()
         course_pk = self.request.GET.get('course')
         initial['course'] = get_object_or_404(Course, pk=course_pk)
+        print(initial)
         return initial
 
     def form_valid(self, form):
@@ -151,19 +152,19 @@ class TaskAddView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('LMS:course_list', kwargs={'pk': self.object.course.pk})
+        return reverse_lazy('lms:main', kwargs={'pk': self.object.course.pk})
         
 
-class TaskUpdateView(LoginRequiredMixin, UserIsOwnerMixin, UpdateView):
+class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
     template_name = "LMS/task_update.html"
     form_class = TaskAdd
-    success_url = reverse_lazy("LMS:course_list")
+    success_url = reverse_lazy("lms:main")
 
-class TaskDeleteView(LoginRequiredMixin, UserIsOwnerMixin, DeleteView):
+class TaskDeleteView(LoginRequiredMixin,  DeleteView):
     model = Task
     template_name = "LMS/task_delete.html"
-    success_url = reverse_lazy("LMS:course_list")
+    success_url = reverse_lazy("lms:main")
 
 class LessonView(LoginRequiredMixin, ListView):
     model = Task
@@ -187,19 +188,19 @@ class LessonDetailView(LoginRequiredMixin, DetailView):
     template_name = "LMS/lesson_detail.html"
     context_object_name = "lesson"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['comment_form'] = CommentForm()  
-        return context
+    #def get_context_data(self, **kwargs):
+    #    context = super().get_context_data(**kwargs)
+    #    context['comment_form'] = CommentForm()  
+    #    return context
 
-    def post(self, request, *args, **kwargs):
-        comment_form = CommentForm(request.POST, request.FILES)
-        if comment_form.is_valid():
-            comment = comment_form.save(commit=False)
-            comment.creator = request.user
-            comment.lesson = self.get_object()
-            comment.save()
-            return redirect('LMS:lesson_detail', pk=comment.lesson.pk)
+    #def post(self, request, *args, **kwargs):
+    #    comment_form = CommentForm(request.POST, request.FILES)
+    #    if comment_form.is_valid():
+    #        comment = comment_form.save(commit=False)
+    #        comment.creator = request.user
+    #        comment.lesson = self.get_object()
+    #        comment.save()
+    #        return redirect('LMS:lesson_detail', pk=comment.lesson.pk)
 
 class LessonAddView(LoginRequiredMixin, CreateView):
     model = Lesson
@@ -231,11 +232,11 @@ class LessonDeleteView(LoginRequiredMixin, UserIsOwnerMixin, DeleteView):
     template_name = "LMS/lesson_delete.html"
     success_url = reverse_lazy("LMS:course_list")
 
-class CommentAddView(LoginRequiredMixin, CreateView):
-    model = Comment
-    template_name = "LMS/comment_add.html"
-    form_class = CommentForm
-    success_url = reverse_lazy("LMS:course_list")
+#class CommentAddView(LoginRequiredMixin, CreateView):
+#    model = Comment
+#    template_name = "LMS/comment_add.html"
+#    form_class = CommentForm
+#    success_url = reverse_lazy("LMS:course_list")
 
 #class CommentLikeToggle(LoginRequiredMixin, View):
 #    def post(self, request, *args, **kwargs):
@@ -263,10 +264,3 @@ class CommentDeleteView(LoginRequiredMixin, UserIsOwnerMixin, DeleteView):
     def get_object(self, queryset = None):
         object = super().get_object(queryset)
         print(object)
-
-class CommentAddView(LoginRequiredMixin, CreateView):
-    model = Comment
-    template_name = "/comment_add.html"
-    form_class = CommentForm
-    success_url = reverse_lazy("LMS:course_list")
-

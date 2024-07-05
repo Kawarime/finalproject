@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="col mb-3">
+    <div class="col">
+        <h1>Уроки</h1>
+        <a href="{% url 'lms:task_add' %}?course={{ course.pk }}"><h2>Создать новый таск</h2></a>
+    </div>
+</div>
+<div class="col mb-5">
+    {% for task in object_list %}
+    <div class ="col-12">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+              <a href="#"><h5 class="card-title">{{ task.name }}</h5></a>
+              <h6 class="card-subtitle mb-1 text-body-secondary">{{ task.staus }}</h6>
+              <a href="{% url 'lms:task_update' task.id %}"><small-text class="card-title">Змінити таск</small-text></a>
+              <a href="{% url 'lms:task_delete' task.id %}"><small-text class="card-title">delete таск</small-text></a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

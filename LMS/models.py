@@ -1,7 +1,7 @@
 from django.db import models
 
 
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, User
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import Permission
 
@@ -92,16 +92,15 @@ class Course(models.Model):
         return f"{self.name}"
 
 
-class Task_Done(models.Model):
-    creator = models.ManyToManyField(CustomUser)
-    MARKS = [
-        ("1", "1"),
-        ("2", "2"),
-        ("3", "3"),
-        ("4", "4"),
-        ("5", "5"),
-    ]
-
+#class Task_Done(models.Model):
+#    creator = models.ManyToManyField(CustomUser)
+#    MARKS = [
+#        ("1", "1"),
+#        ("2", "2"),
+#        ("3", "3"),
+#        ("4", "4"),
+#        ("5", "5"),
+#    ]
 
 class Task(models.Model):
     STATUSES= [
@@ -109,14 +108,14 @@ class Task(models.Model):
         ("done", "Done")
     ]
     name = models.CharField(max_length = 50)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='courses')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course_task')
     description = models.TextField()
     status = models.CharField(max_length = 50, choices = STATUSES, default = "notdone")
-    creator = models.ManyToManyField(CustomUser)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     priority = models.IntegerField()
     start_date = models.DateField()
     dead_line = models.DateField()
-    task_done = models.ForeignKey(Task_Done, on_delete=models.DO_NOTHING)
+    #task_done = models.ForeignKey(Task_Done, on_delete=models.DO_NOTHING, blank=True, null=True)
     
 
     def __str__(self):
@@ -129,7 +128,7 @@ class Lesson(models.Model):
     content = models.TextField()
     #media
     creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='courses')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course_lesson')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -147,27 +146,27 @@ class Announcement(models.Model):
         return f"{self.title}"
     
 class Course_User(models.Model):
-    course = models.OneToOneField(Course, on_delete=models.CASCADE)
-    users_courses = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.OneToOneField(Course, on_delete=models.CASCADE,  related_name='course')
+    users_courses = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course_user') 
 
 class Task_User(models.Model):
-    task = models.OneToOneField(Task, on_delete=models.CASCADE)
-    user_task = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    task = models.OneToOneField(Task, on_delete=models.CASCADE, related_name='task')
+    user_task = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='task_user')
 
 class Comment(models.Model):
-    post = models.ForeignKey(Task, Lesson, on_delete=models.CASCADE, related_name='comments')
-    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='comments')
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    #post = models.ForeignKey(Task, Lesson, on_delete=models.CASCADE, related_name='comments')
+    #creator = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='comments')
+    #content = models.TextField()
+    #created_at = models.DateTimeField(auto_now_add=True)
     #media = models.FileField(upload_to='comments_media/',blank = True, null =True)
 
     def get_absolute_url(self):
         return self.post.get_absolute_url()
 
-class Like(models.Model):
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='likes')
-    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='liked_comments')
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta: 
-        unique_together = ('comment', 'user')
+#class Like(models.Model):
+#    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='likes')
+#    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='liked_comments')
+#    created_at = models.DateTimeField(auto_now_add=True)
+#
+#    class Meta: 
+#        unique_together = ('comment', 'user')
