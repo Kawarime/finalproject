@@ -13,6 +13,10 @@ urlpatterns = [
     path('<int:pk>/lesson_update/', LessonUpdateView.as_view(), name="lesson_update"),
     path('<int:pk>/lesson/detail/', LessonDetailView.as_view(), name = "lesson_detail"),
     path('<int:pk>/lesson/delete/', LessonDeleteView.as_view(), name = "lesson_delete"),
+    path('<int:pk>/lesson/delete/', LessonDeleteView.as_view(), name = "lesson_delete"),
+    path('comment_add/', CommentAddView.as_view(), name="comment_add"),
+    path('comment/<int:comment_id>/like-toggle/', CommentLikeToggle.as_view(), name='comment-like-toggle'),
+    path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name = "comment_delete")
 ]
 
 app_name = "lms"

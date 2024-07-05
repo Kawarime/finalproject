@@ -19,11 +19,11 @@ class LessonAdd(forms.ModelForm):
             'course': forms.HiddenInput()
         }
 
-#class CommentForm(forms.ModelForm):
-#    class Meta:
-#        model = Comment
-#        fields = ["content",]
-        #widgets = {
-        #    "media": forms.FileInput()
-#
-        #}
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ["content",]
+        widgets = {
+           "course": forms.FileInput()
+
+        }
