@@ -5,19 +5,18 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import Permission
 
-# Create your models here.
+
 
 class CustomUser(AbstractUser):
     password = models.CharField(max_length=128)
     
-    # Ролі
     role = models.CharField(max_length=20, choices=(
         ('student', 'Student'),
         ('teacher', 'Teacher'),
         ('admin', 'Administrator'),
     ), default='user')
   
-    # Треба
+    
     groups = models.ManyToManyField(
         'auth.Group',
         verbose_name='groups',
@@ -33,9 +32,7 @@ class CustomUser(AbstractUser):
         related_query_name='user'
     )
 
-    # Перевірки
 
-    # Перевірка пароля на відповідність вимогам
     def clean(self):
         super().clean()
         if len(self.password) < 8:
@@ -57,8 +54,8 @@ class CustomUser(AbstractUser):
     
     def save(self, *args, **kwargs):
         if not self.id:
-            self.set_password(self.password)  # Викликаємо set_password для створення хешу паролю
-        self.full_clean()  # Перевірка на відповідність обмеженням перед збереженням
+            self.set_password(self.password) 
+        self.full_clean() 
         
         if (
             'username' in kwargs or 'first_name' in kwargs or 'last_name' in kwargs or
@@ -67,7 +64,7 @@ class CustomUser(AbstractUser):
             self.full_clean()
 
         super().save(*args, **kwargs)
-        self.assign_role_permissions()  # Надаємо дозволи
+        self.assign_role_permissions()  
 
 
     def assign_role_permissions(self):
@@ -78,7 +75,7 @@ class CustomUser(AbstractUser):
         elif self.role == 'admin':
             permissions = Permission.objects.all()
         
-        # Надає дозволи користувачеві
+        
         self.user_permissions.set(permissions)
 
     def __str__(self):
@@ -109,11 +106,10 @@ class Task_Done(models.Model):
 class Task(models.Model):
     STATUSES= [
         ("notdone", "Not Done"),
-        ("in_progress", "In Progress"),
         ("done", "Done")
     ]
     name = models.CharField(max_length = 50)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='themes')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='courses')
     description = models.TextField()
     status = models.CharField(max_length = 50, choices = STATUSES, default = "notdone")
     creator = models.ManyToManyField(CustomUser)
@@ -149,6 +145,14 @@ class Announcement(models.Model):
 
     def __str__(self):
         return f"{self.title}"
+    
+class Course_User(models.Model):
+    course = models.OneToOneField(Course, on_delete=models.CASCADE)
+    users_courses = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+class Task_User(models.Model):
+    task = models.OneToOneField(Task, on_delete=models.CASCADE)
+    user_task = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 class Comment(models.Model):
     post = models.ForeignKey(Task, Lesson, on_delete=models.CASCADE, related_name='comments')
