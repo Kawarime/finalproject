@@ -5,19 +5,18 @@ from django.contrib.auth.models import AbstractUser, User
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import Permission
 
-# Create your models here.
+
 
 class CustomUser(AbstractUser):
     password = models.CharField(max_length=128)
     
-    # Ролі
     role = models.CharField(max_length=20, choices=(
         ('student', 'Student'),
         ('teacher', 'Teacher'),
         ('admin', 'Administrator'),
     ), default='user')
   
-    # Треба
+    
     groups = models.ManyToManyField(
         'auth.Group',
         verbose_name='groups',
@@ -33,9 +32,7 @@ class CustomUser(AbstractUser):
         related_query_name='user'
     )
 
-    # Перевірки
 
-    # Перевірка пароля на відповідність вимогам
     def clean(self):
         super().clean()
         if len(self.password) < 8:
@@ -57,8 +54,8 @@ class CustomUser(AbstractUser):
     
     def save(self, *args, **kwargs):
         if not self.id:
-            self.set_password(self.password)  # Викликаємо set_password для створення хешу паролю
-        self.full_clean()  # Перевірка на відповідність обмеженням перед збереженням
+            self.set_password(self.password) 
+        self.full_clean() 
         
         if (
             'username' in kwargs or 'first_name' in kwargs or 'last_name' in kwargs or
@@ -67,7 +64,7 @@ class CustomUser(AbstractUser):
             self.full_clean()
 
         super().save(*args, **kwargs)
-        self.assign_role_permissions()  # Надаємо дозволи
+        self.assign_role_permissions()  
 
 
     def assign_role_permissions(self):
@@ -78,7 +75,7 @@ class CustomUser(AbstractUser):
         elif self.role == 'admin':
             permissions = Permission.objects.all()
         
-        # Надає дозволи користувачеві
+        
         self.user_permissions.set(permissions)
 
     def __str__(self):
@@ -95,20 +92,20 @@ class Course(models.Model):
         return f"{self.name}"
 
 
-
-
 class Task(models.Model):
     STATUSES= [
         ("notdone", "Not Done"),
-        ("in_progress", "In Progress"),
         ("done", "Done")
     ]
     name = models.CharField(max_length = 50)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='courses')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course_task')
     description = models.TextField()
     status = models.CharField(max_length = 50, choices = STATUSES, default = "notdone")
     creator = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-
+    priority = models.IntegerField()
+    start_date = models.DateField()
+    dead_line = models.DateField()
+    
     
 
     def __str__(self):
@@ -118,26 +115,14 @@ class Lesson(models.Model):
     name = models.CharField(max_length=100)
     content = models.TextField()
     #media
-    creator = models.ForeignKey(User, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
+    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course_lesson')
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.title}"
 
-class Task_Done(models.Model):
-    creator = models.ManyToManyField(User)
-    MARKS = [
-        ("0", "Не оценено"),
-        ("1", "1"),
-        ("2", "2"),
-        ("3", "3"),
-        ("4", "4"),
-        ("5", "5")
-    ]
-    content = models.FileField(upload_to='task_done_media/',blank = True, null =True)
-    mark = models.CharField(max_length=1, choices=MARKS, default="0")
-    task = models.ForeignKey(Lesson, on_delete=models.CASCADE, blank=True, null=True)
-    created_at = models.DateField(auto_now_add=True, blank=True, null=True)
+
 
 
 class Announcement(models.Model):
@@ -149,21 +134,37 @@ class Announcement(models.Model):
 
     def __str__(self):
         return f"{self.title}"
+    
+class Course_User(models.Model):
+    course = models.OneToOneField(Course, on_delete=models.CASCADE,  related_name='course')
+    users_courses = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course_user') 
+
+class Task_User(models.Model):
+    task = models.OneToOneField(Task, on_delete=models.CASCADE, related_name='task')
+    user_task = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='task_user')
+    MARKS = [
+        ("0", "Не оценено"),
+        ("1", "1"),
+        ("2", "2"),
+        ("3", "3"),
+        ("4", "4"),
+        ("5", "5")
+    ]
+
 
 class Comment(models.Model):
-    #post = models.ForeignKey(Task, Lesson, on_delete=models.CASCADE, related_name='comments')
-    #creator = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='comments')
-    #content = models.TextField()
-    #created_at = models.DateTimeField(auto_now_add=True)
-    #media = models.FileField(upload_to='comments_media/',blank = True, null =True)
+    post = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='comments')
+    creator = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='comments')
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    media = models.FileField(upload_to='comments_media/',blank = True, null =True)
 
     def get_absolute_url(self):
         return self.post.get_absolute_url()
 
-#class Like(models.Model):
-#    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='likes')
-#    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='liked_comments')
-#    created_at = models.DateTimeField(auto_now_add=True)
-#
-#    class Meta: 
-#        unique_together = ('comment', 'user')
+class Like(models.Model):
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='likes')
+    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='liked_comments')
+    created_at = models.DateTimeField(auto_now_add=True)
+    class Meta: 
+        unique_together = ('comment', 'creator')

@@ -15,6 +15,10 @@ urlpatterns = [
     path('<int:pk>/lesson/delete/', LessonDeleteView.as_view(), name = "lesson_delete"),
     path('lessons/<int:lesson_pk>/task_done_add/', TaskDoneView.as_view(), name = "task_done"),
     
+    path('<int:pk>/lesson/delete/', LessonDeleteView.as_view(), name = "lesson_delete"),
+    path('comment_add/', CommentAddView.as_view(), name="comment_add"),
+    path('comment/<int:comment_id>/like-toggle/', CommentLikeToggle.as_view(), name='comment-like-toggle'),
+    path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name = "comment_delete")
 ]
 
 app_name = "lms"

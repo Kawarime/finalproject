@@ -6,4 +6,33 @@
     <h1>{{ task.name }}</h1>
     <h3>{{ task.description }}</h3>
 </div>
+
+<div class="comments">
+    <h2>Сообщения:</h2>
+    {% for comment in post.comments.all %}
+        <div class="comment p-3" style="border: 1px solid;">
+            <small>{{ comment.creator.username }}</small> <small>{{ comment.created_at }}</small>
+            <p>{{ comment.content }}</p>
+            <form action="{% url 'lms:comment-like-toggle' comment.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" name="like_button" class="btn btn-sm {% if request.user in comment.likes.all %}btn-success{% else %}btn-outline-secondary{% endif %}">
+                    лайк {{ comment.likes.count }}
+                </button>
+                <a href="{% url 'lms:comment_delete' comment.id %}" class="btn btn-danger">Видалити</a>
+            </form>
+        </div>
+    {% empty %}
+        <p>Комментариев нет.</p>
+    {% endfor %}
+</div>
+
+<div class="add-comment mt-4">
+    <h4>Ответить</h4>
+    <form action="{% url 'lms:task_detail' post.id %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
+</div>
+
 {% endblock %}

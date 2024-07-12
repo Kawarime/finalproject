@@ -2,7 +2,7 @@ from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView, View
-from LMS.forms import TaskAdd, LessonAdd, TaskDoneForm
+from LMS.forms import TaskAdd, LessonAdd, CommentForm, TaskDoneForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from LMS.mixins import UserIsOwnerMixin
@@ -121,19 +121,19 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
     template_name = "LMS/task_detail.html"
     context_object_name = "task"
 
-    #def get_context_data(self, **kwargs):
-    #    context = super().get_context_data(**kwargs)
-    #    context['comment_form'] = CommentForm()  
-    #    return context
-#
-    #def post(self, request, *args, **kwargs):
-    #    comment_form = CommentForm(request.POST, request.FILES)
-    #    if comment_form.is_valid():
-    #        comment = comment_form.save(commit=False)
-    #        comment.creator = request.user
-    #        comment.task = self.get_object()
-    #        comment.save()
-    #        return redirect('LMS:task_detail', pk=comment.task.pk)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comment_form'] = CommentForm()  
+        return context
+
+    def post(self, request, *args, **kwargs):
+        comment_form = CommentForm(request.POST, request.FILES)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.creator = request.user
+            comment.task = self.get_object()
+            comment.save()
+            return redirect('LMS:task_detail', pk=comment.task.pk)
         
 class TaskAddView(LoginRequiredMixin, CreateView):
     model = Task
@@ -189,7 +189,7 @@ class LessonDetailView(LoginRequiredMixin, DetailView):
     #    context = super().get_context_data(**kwargs)
     #    context['comment_form'] = CommentForm()  
     #    return context
-
+    #
     #def post(self, request, *args, **kwargs):
     #    comment_form = CommentForm(request.POST, request.FILES)
     #    if comment_form.is_valid():
@@ -226,29 +226,29 @@ class LessonDeleteView(LoginRequiredMixin, UserIsOwnerMixin, DeleteView):
     template_name = "LMS/task_delete.html"
     success_url = reverse_lazy("lms:main")
 
-#class CommentAddView(LoginRequiredMixin, CreateView):
-#    model = Comment
-#    template_name = "LMS/comment_add.html"
-#    form_class = CommentForm
-#    success_url = reverse_lazy("LMS:course_list")
+class CommentAddView(LoginRequiredMixin, CreateView):
+    model = Comment
+    template_name = "LMS/comment_add.html"
+    form_class = CommentForm
+    success_url = reverse_lazy("lms:course_list")
 
-#class CommentLikeToggle(LoginRequiredMixin, View):
-#    def post(self, request, *args, **kwargs):
-#        comment_id = kwargs.get('comment_id')
-#        comment = Comment.objects.get(pk=comment_id)
-#        user = request.user
-#        like, created = Like.objects.get_or_create(comment=comment, user=user)
-#        if not created:
-#           
-#            like.delete()
-#
-#       
-#        return redirect('LMS:_detail', pk=comment.post.id)
-#
-#    def get_context_data(self, **kwargs):
-#        context = super().get_context_data(**kwargs)
-#        context ["comments"] = Comment.objects.filter(post=self.get_object())
-#        return context
+class CommentLikeToggle(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        comment_id = kwargs.get('comment_id')
+        comment = Comment.objects.get(pk=comment_id)
+        user = request.user
+        like, created = Like.objects.get_or_create(comment=comment, user=user)
+        if not created:
+           
+            like.delete()
+
+       
+        return redirect('LMS:task_detail', pk=comment.post.id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context ["comments"] = Comment.objects.filter(post=self.get_object())
+        return context
 
 class CommentDeleteView(LoginRequiredMixin, UserIsOwnerMixin, DeleteView):
     model = Comment

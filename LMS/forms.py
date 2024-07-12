@@ -18,7 +18,7 @@ class LessonAdd(forms.ModelForm):
     widgets = {
             'course': forms.HiddenInput()
         }
-
+    
 class TaskDoneForm(forms.ModelForm):
     class Meta:
         model = Task_Done
@@ -28,12 +28,12 @@ class TaskDoneForm(forms.ModelForm):
             'task': forms.HiddenInput(),
             'media': forms.FileInput(),
         }
+    
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ["content",]
+        widgets = {
+           "course": forms.FileInput()
 
-#class CommentForm(forms.ModelForm):
-#    class Meta:
-#        model = Comment
-#        fields = ["content",]
-        #widgets = {
-        #    "media": forms.FileInput()
-#
-        #}
+        }
