@@ -5,6 +5,6 @@
 <div class="col-12">
     <h1>{{ lesson.name }}</h1>
     <h3>{{ lesson.content }}</h3>
-    <a href="#" class="btn btn-secondary">Додати завдання</a>
+    <a href="{% url 'lms:task_done' lesson.pk %}" class="btn btn-secondary">Додати завдання</a>
 </div>
 {% endblock %}

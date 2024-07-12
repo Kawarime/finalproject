@@ -1,7 +1,8 @@
+from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect, get_object_or_404
-from LMS.models import *
+from .models import *
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView, View
-from LMS.forms import TaskAdd, LessonAdd
+from LMS.forms import TaskAdd, LessonAdd, TaskDoneForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from LMS.mixins import UserIsOwnerMixin
@@ -257,3 +258,24 @@ class CommentDeleteView(LoginRequiredMixin, UserIsOwnerMixin, DeleteView):
     def get_object(self, queryset = None):
         object = super().get_object(queryset)
         print(object)
+
+class TaskDoneView(LoginRequiredMixin, CreateView):
+    model = Task_Done
+    template_name = "LMS/task_done.html"
+    form_class = TaskDoneForm
+
+    def dispatch(self, request, *args, **kwargs):
+        self.lesson = get_object_or_404(Lesson, pk=kwargs['lesson_pk'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        instance = form.save(commit=True)
+        instance.task = self.lesson
+        instance.save()  
+        instance.creator.set([self.request.user])
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('lms:main')
+
+

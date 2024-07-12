@@ -125,7 +125,7 @@ class Lesson(models.Model):
         return f"{self.title}"
 
 class Task_Done(models.Model):
-    creator = models.ManyToManyField(CustomUser)
+    creator = models.ManyToManyField(User)
     MARKS = [
         ("0", "Не оценено"),
         ("1", "1"),
@@ -137,6 +137,7 @@ class Task_Done(models.Model):
     content = models.FileField(upload_to='task_done_media/',blank = True, null =True)
     mark = models.CharField(max_length=1, choices=MARKS, default="0")
     task = models.ForeignKey(Lesson, on_delete=models.CASCADE, blank=True, null=True)
+    created_at = models.DateField(auto_now_add=True, blank=True, null=True)
 
 
 class Announcement(models.Model):

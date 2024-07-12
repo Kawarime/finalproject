@@ -19,6 +19,16 @@ class LessonAdd(forms.ModelForm):
             'course': forms.HiddenInput()
         }
 
+class TaskDoneForm(forms.ModelForm):
+    class Meta:
+        model = Task_Done
+        fields = ["content"]
+    
+    widgets = {
+            'task': forms.HiddenInput(),
+            'media': forms.FileInput(),
+        }
+
 #class CommentForm(forms.ModelForm):
 #    class Meta:
 #        model = Comment

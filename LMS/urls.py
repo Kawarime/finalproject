@@ -13,6 +13,8 @@ urlpatterns = [
     path('<int:pk>/lesson_update/', LessonUpdateView.as_view(), name="lesson_update"),
     path('<int:pk>/lesson/detail/', LessonDetailView.as_view(), name = "lesson_detail"),
     path('<int:pk>/lesson/delete/', LessonDeleteView.as_view(), name = "lesson_delete"),
+    path('lessons/<int:lesson_pk>/task_done_add/', TaskDoneView.as_view(), name = "task_done"),
+    
 ]
 
 app_name = "lms"
