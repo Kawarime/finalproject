@@ -102,7 +102,7 @@ class Task(models.Model):
     description = models.TextField()
     status = models.CharField(max_length = 50, choices = STATUSES, default = "notdone")
     creator = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    priority = models.IntegerField()
+    priority = models.IntegerField(blank=True, null=True)
     start_date = models.DateField()
     dead_line = models.DateField()
     
@@ -110,19 +110,6 @@ class Task(models.Model):
 
     def __str__(self):
         return f"{self.name}"
-
-class Lesson(models.Model):
-    name = models.CharField(max_length=100)
-    content = models.TextField()
-    #media
-    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course_lesson')
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.title}"
-
-
 
 
 class Announcement(models.Model):
@@ -154,7 +141,7 @@ class Task_User(models.Model):
 
 class Comment(models.Model):
     post = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='comments')
-    creator = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='comments')
+    creator = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='comments')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     media = models.FileField(upload_to='comments_media/',blank = True, null =True)
@@ -164,7 +151,8 @@ class Comment(models.Model):
 
 class Like(models.Model):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='likes')
-    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='liked_comments')
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='liked_comments')
     created_at = models.DateTimeField(auto_now_add=True)
     class Meta: 
         unique_together = ('comment', 'creator')
+

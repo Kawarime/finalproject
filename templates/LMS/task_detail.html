@@ -9,7 +9,7 @@
 
 <div class="comments">
     <h2>Сообщения:</h2>
-    {% for comment in post.comments.all %}
+    {% for comment in task.comments.all %}
         <div class="comment p-3" style="border: 1px solid;">
             <small>{{ comment.creator.username }}</small> <small>{{ comment.created_at }}</small>
             <p>{{ comment.content }}</p>
@@ -28,7 +28,7 @@
 
 <div class="add-comment mt-4">
     <h4>Ответить</h4>
-    <form action="{% url 'lms:task_detail' post.id %}" method="post" enctype="multipart/form-data">
+    <form action="{% url 'lms:task_detail' task.id %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ comment_form.as_p }}
         <button type="submit" class="btn btn-primary">Отправить</button>
