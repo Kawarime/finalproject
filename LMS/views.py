@@ -121,9 +121,14 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
     template_name = "LMS/task_detail.html"
     context_object_name = "task"
 
+    #def get_context_data(self, **kwargs):
+    #    context = super().get_context_data(**kwargs)
+    #    context['comment_form'] = CommentForm()  
+    #    return context
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['comment_form'] = CommentForm()  
+        context['comments'] = Comment.objects.filter(post=self.object)
         return context
 
     def post(self, request, *args, **kwargs):
@@ -172,6 +177,21 @@ class CommentAddView(LoginRequiredMixin, CreateView):
     form_class = CommentForm
     success_url = reverse_lazy("lms:course_list")
 
+#class CommentLikeToggle(LoginRequiredMixin, View):
+#    def post(self, request, *args, **kwargs):
+#        comment_id = kwargs.get('comment_id')
+#        comment = Comment.objects.get(pk=comment_id)
+#        creator = request.user
+#        like, created = Like.objects.get_or_create(comment=comment, creator=creator)
+#        if not created:
+#            like.delete()
+#        return redirect('lms:task_detail', pk=comment.task.id)
+#    
+#    def get_context_data(self, **kwargs):
+#        context = super().get_context_data(**kwargs)
+#        context ["comments"] = Comment.objects.filter(post=self.get_object())
+#        return context
+
 class CommentLikeToggle(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         comment_id = kwargs.get('comment_id')
@@ -183,21 +203,32 @@ class CommentLikeToggle(LoginRequiredMixin, View):
             like.delete()
 
        
-        return redirect('lms:task_detail', pk=comment.post.id)
+        return redirect('lms:task_detail', pk=comment.task.id)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context ["comments"] = Comment.objects.filter(post=self.get_object())
+        context ["comments"] = Comment.objects.filter(task=self.get_object())
         return context
 
-class CommentDeleteView(LoginRequiredMixin, UserIsOwnerMixin, DeleteView):
+
+    
+
+
+class CommentDeleteView(LoginRequiredMixin, DeleteView):
     model = Comment
     template_name = "LMS/comment_delete.html"
-    success_url = reverse_lazy("lms:course_list")
+    success_url = reverse_lazy("lms:main")
 
-    def get_object(self, queryset = None):
+    def get_object(self, queryset=None):
         object = super().get_object(queryset)
         print(object)
+        return object
+
+    def get_success_url(self):
+        if self.object:
+            return self.success_url
+        else:
+            return reverse_lazy("lms:main")
 
 
 

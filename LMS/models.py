@@ -102,7 +102,6 @@ class Task(models.Model):
     description = models.TextField()
     status = models.CharField(max_length = 50, choices = STATUSES, default = "notdone")
     creator = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    priority = models.IntegerField(blank=True, null=True)
     start_date = models.DateField()
     dead_line = models.DateField()
     
@@ -144,15 +143,15 @@ class Comment(models.Model):
     creator = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='comments')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    media = models.FileField(upload_to='comments_media/',blank = True, null =True)
+    
 
     def get_absolute_url(self):
         return self.post.get_absolute_url()
 
 class Like(models.Model):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='likes')
-    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='liked_comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='liked_comments')
     created_at = models.DateTimeField(auto_now_add=True)
-    class Meta: 
-        unique_together = ('comment', 'creator')
 
+    class Meta:
+        unique_together = ('comment', 'user')

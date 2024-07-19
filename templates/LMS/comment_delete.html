@@ -7,7 +7,7 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary">Видалити</button>
-        <a href="{% url 'forum:themes_list' %}" class="btn btn-secondary">Назад до форуму</a>
+        <a href="{% url 'lms:main' %}" class="btn btn-secondary">Назад до курсу</a>
     </form>
 </div>
 {% endblock %}

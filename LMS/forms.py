@@ -4,7 +4,7 @@ from LMS.models import *
 class TaskAdd(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ["name", "description", "status"]
+        fields = ["name", "description", "status", "start_date", "dead_line"]
 
     widgets = {
             'course': forms.HiddenInput()
