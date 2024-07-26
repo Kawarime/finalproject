@@ -95,16 +95,11 @@ class Course(models.Model):
 
 
 class Task(models.Model):
-    STATUSES= [
-        ("notdone", "Not Done"),
-        ("done", "Done")
-    ]
     name = models.CharField(max_length = 50)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course_task')
     description = models.TextField()
-    status = models.CharField(max_length = 50, choices = STATUSES, default = "notdone")
     creator = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    start_date = models.DateField()
+    create_date = models.DateField(auto_now_add=True, null=True, blank=True)
     dead_line = models.DateField()
     
     
@@ -141,7 +136,7 @@ class Task_User(models.Model):
 
 
 class Comment(models.Model):
-    post = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='comments')
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='comments')
     creator = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='comments')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

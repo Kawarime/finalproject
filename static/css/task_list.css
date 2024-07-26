@@ -1,0 +1,30 @@
+.task-card {
+    border: 1px solid #333; /* black stroke */
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #e7e7e7; /* darker grey background */
+}
+
+.task-icon {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.task-info {
+    display: flex;
+    align-items: center;
+}
+
+.task-details {
+    flex-grow: 1;
+}
+
+.task-actions {
+    text-align: right;
+}
+
+.task-actions .btn {
+    margin-left: 10px;
+}

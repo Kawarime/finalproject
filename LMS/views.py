@@ -120,16 +120,16 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
     model = Task
     template_name = "LMS/task_detail.html"
     context_object_name = "task"
-
-    #def get_context_data(self, **kwargs):
-    #    context = super().get_context_data(**kwargs)
-    #    context['comment_form'] = CommentForm()  
-    #    return context
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['comments'] = Comment.objects.filter(post=self.object)
+        context['comment_form'] = CommentForm()  
         return context
+    
+    #def get_context_data(self, **kwargs):
+    #    context = super().get_context_data(**kwargs)
+    #    context['comments'] = Comment.objects.filter(post=self.object)
+    #    return context
 
     def post(self, request, *args, **kwargs):
         task = self.get_object()  # Get the task from the URL parameters
