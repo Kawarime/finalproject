@@ -10,13 +10,22 @@
 </div>
 <div class="col mb-5">
     {% for task in object_list %}
-    <div class ="col-12">
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-              <a href="{% url 'lms:task_detail' task.id %}"><h5 class="card-title">{{ task.name }}</h5></a>
-              <h6 class="card-subtitle mb-1 text-body-secondary">{{ task.status }}</h6>
-              <a href="{% url 'lms:task_update' task.id %}"><small-text class="card-title">Змінити таск</small-text></a>
-              <a href="{% url 'lms:task_delete' task.id %}"><small-text class="card-title">delete таск</small-text></a>
+    <div class="task-card mb-3 bg-secondary bg-opacity-10 rounded">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-8">
+                    <div class="task-info">
+                        <i class="bi bi-clipboard-check task-icon"></i>
+                        <div class="task-details">
+                            <a href="{% url 'lms:task_detail' task.id %}"><h5 class="card-title">{{ task.name }}</h5></a>
+                            <h6 class="card-subtitle mb-1 text-body-secondary">{{ task.status }}</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4 text-right">
+                    <a href="{% url 'lms:task_update' task.id %}" class="btn btn-sm btn-secondary">Змінити таск</a>
+                    <a href="{% url 'lms:task_delete' task.id %}" class="btn btn-sm btn-danger">delete таск</a>
+                </div>
             </div>
         </div>
     </div>

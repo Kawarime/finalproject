@@ -139,7 +139,7 @@ class Task_User(models.Model):
 
 
 class Comment(models.Model):
-    post = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='comments')
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='comments')
     creator = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='comments')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
