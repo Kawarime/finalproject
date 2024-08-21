@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Login Form{% endblock title %}
+<link rel="stylesheet" href="static/css/login.css">
+{% block content %}
+    <div class="popup-form" id="popupForm">
+        <h2>Login</h2>
+        <form action="{% url 'lms:login' %}" method="post">
+            {% csrf_token %}
+            <div>
+                <label for="id_username" class="form-label">Username:</label>
+                <input type="text" name="username" id="id_username" class="form-control" required>
+            </div>
+            <div>
+                <label for="id_password" class="form-label">Password:</label>
+                <input type="password" name="password" id="id_password" class="form-control" required>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary mt-2">Login</button>
+            </div>
+        </form>
+    </div>
+    {% if error_message %}
+    <div class="alert alert-danger">{{ error_message }}</div>
+{% endif %}
+{% endblock content %}

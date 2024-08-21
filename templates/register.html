@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Registration Form{% endblock title %}
+<link rel="stylesheet" href="static/css/register.css">
+{% block content %}
+    <div class="popup-form" id="registerPopupForm">
+        <h2>Registration</h2>
+        <form id="registerForm" action="{% url 'lms:register' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div>
+                <button type="submit" class="btn btn-primary mt-2">Register</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

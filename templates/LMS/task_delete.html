@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Оновлення завдання</h2>
+    <p>Ви впевнені, що хочете видалити завдання?</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Видалити</button>
+        <a href="{% url 'lms:main' %}" class="btn btn-secondary">Назад до списку завдань</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+/* register.css */
+
+/* Загальні стилі для форми */
+.popup-form {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.popup-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.popup-form .error-message {
+    color: red;
+    margin-bottom: 20px;
+}
+
+.popup-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-form label {
+    font-weight: bold;
+    width: 100%;
+    margin: 5px;
+}
+
+.popup-form input[type="text"],
+.popup-form input[type="email"],
+.popup-form input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+.popup-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4A8BDF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.popup-form button:hover {
+    background-color: #3262a8;
+}
+
+
+
+/* Медіа-запит для екранів ширше за 768px */
+@media screen and (min-width: 768px) {
+    .popup-form {
+        width: 400px;
+    }
+}
+
+/* Медіа-запит для екранів ширше за 992px */
+@media screen and (min-width: 992px) {
+    .popup-form {
+        width: 500px;
+    }
+}

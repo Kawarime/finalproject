@@ -1,0 +1,61 @@
+/* profile.css */
+
+/* Загальні стилі для профілю */
+.profile-container {
+    margin: 50px auto;
+    max-width: 600px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profile-header h1 {
+    font-family: 'Marck Script';
+    color: #4A8BDF;
+}
+
+.profile-info {
+    font-family: 'Cormorant Infant';
+    font-size: 18px;
+    color: #000;
+    margin-bottom: 10px;
+}
+
+.profile-info strong {
+    font-weight: bold;
+}
+
+.profile-edit-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-family: 'Cormorant Infant';
+}
+
+.profile-edit-link a {
+    color: #A0006D;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+
+
+/* Медіа-запит для екранів ширше за 768px */
+@media screen and (min-width: 768px) {
+    .popup-form {
+        width: 400px;
+    }
+}
+
+/* Медіа-запит для екранів ширше за 992px */
+@media screen and (min-width: 992px) {
+    .popup-form {
+        width: 500px;
+    }
+}

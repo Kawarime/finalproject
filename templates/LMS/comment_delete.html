@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <p>Ви впевнені, що хочете видалити цей коментар"{{ object.title }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Видалити</button>
+        <a href="{% url 'lms:main' %}" class="btn btn-secondary">Назад до курсу</a>
+    </form>
+</div>
+{% endblock %}
